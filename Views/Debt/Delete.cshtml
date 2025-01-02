@@ -1,0 +1,57 @@
+﻿@model ShopWebMVC.Models.Debt
+
+<h2>تأكيد الحذف</h2>
+
+<p>هل أنت متأكد أنك تريد حذف هذا الدين؟</p>
+
+<div>
+    <h4>دين</h4>
+    <dl class="row">
+        <dt class="col-sm-2">رقم الدين</dt>
+        <dd class="col-sm-10">@Model.Id</dd>
+
+        <dt class="col-sm-2">رقم البطاقة</dt>
+        <dd class="col-sm-10">@Model.Card.Id</dd>
+
+        <dt class="col-sm-2">اسم البطاقة</dt>
+        <dd class="col-sm-10">@Model.Card.FirstName @Model.Card?.SecondName @Model.Card?.ThirdName @Model.Card?.FourthName</dd>
+
+        <dt class="col-sm-2">القيمة النقدية</dt>
+        <dd class="col-sm-10">@Model.MonetaryDebt</dd>
+    </dl>
+
+    <h4>الأصناف المرتبطة بالدين</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>اسم الصنف</th>
+                <th>الكمية</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.DebtItems != null && Model.DebtItems.Count > 0) // التحقق من وجود عناصر
+            {
+                foreach (var item in Model.DebtItems)
+                {
+                    <tr>
+                        <td>@item.Item.Name</td>
+                        <td>@item.Quantity</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="2">لا توجد أصناف مرتبطة بالدين</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</div>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">نعم، احذف</button>
+    <a asp-action="Index" class="btn btn-secondary">إلغاء</a>
+</form>

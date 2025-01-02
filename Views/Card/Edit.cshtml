@@ -1,0 +1,75 @@
+﻿@model ShopWebMVC.Models.Card
+
+@{
+    ViewData["Title"] = "تعديل البطاقة";
+}
+
+<h1>تعديل البطاقة</h1>
+
+<div>
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-group">
+            @Html.HiddenFor(m => m.Id)
+        </div>
+
+        <div class="form-group">
+            @Html.Label("الاسم الاول")
+            @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.FirstName)
+        </div>
+
+        <div class="form-group">
+            @Html.Label("الاسم التاني")
+            @Html.TextBoxFor(m => m.SecondName, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.SecondName)
+        </div>
+
+        <div class="form-group">
+            @Html.Label("الاسم الثالث")
+            @Html.TextBoxFor(m => m.ThirdName, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.ThirdName)
+        </div>
+
+        <div class="form-group">
+            @Html.Label("الاسم الرابع")
+            @Html.TextBoxFor(m => m.FourthName, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.FourthName)
+        </div>
+
+        <div class="form-group">
+            @Html.Label("رقم الهاتف")
+            @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.PhoneNumber)
+        </div>
+
+        <div class="form-group">
+            @Html.Label("العنوان")
+            @Html.TextBoxFor(m => m.Address, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Address)
+        </div>
+
+        <div class="form-group">
+            @Html.Label("عدد الافراد")
+            @Html.TextBoxFor(m => m.NumberOfIndividuals, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.NumberOfIndividuals)
+        </div>
+
+        <div class="form-group">
+            @Html.Label("ملاحظة")
+            @Html.TextBoxFor(m => m.Notes, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Notes)
+        </div>
+
+        <div class="form-group">
+            @Html.Label("المخبز")
+            @Html.DropDownListFor(m => m.BakeryId, (SelectList)ViewBag.Bakeries, "اختر مخبز", new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.BakeryId)
+        </div>
+
+        <button type="submit" class="btn btn-primary">تحديث</button>
+        <a asp-action="Index" class="btn btn-secondary">عودة</a>
+    }
+</div>

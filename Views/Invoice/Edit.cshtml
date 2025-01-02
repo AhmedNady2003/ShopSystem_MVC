@@ -1,0 +1,270 @@
+﻿@model ShopWebMVC.Models.Invoice
+
+@{
+    ViewData["Title"] = "تعديل الفاتورة";
+}
+
+<!-- تضمين CSS لـ Bootstrap -->
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+<style>
+    .small-card {
+        padding: 0.5rem;
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+    }
+
+        .small-card table {
+            font-size: 0.9rem;
+        }
+
+    .form-group label {
+        text-align: right;
+    }
+
+    h1,
+    h4,
+    h5 {
+        text-align: right;
+    }
+
+    .item-row .btn-danger {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.8rem;
+        line-height: 1;
+    }
+
+    .item-row .form-control {
+        font-size: 0.9rem;
+        padding: 0.4rem;
+    }
+</style>
+<div class="container" dir="rtl">
+    <!-- بيانات البطاقة -->
+    <div class="card small-card">
+        <div class="card-header">بيانات البطاقة</div>
+        <div class="card-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>اسم البطاقة</th>
+                        <th>رقم الهاتف</th>
+                        <th>العنوان</th>
+                        <th>عدد الأفراد</th>
+                        <th>الملاحظات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>@Model.Card.FirstName @Model.Card.SecondName @Model.Card.ThirdName @Model.Card.FourthName</td>
+                        <td>@Model.Card.PhoneNumber</td>
+                        <td>@Model.Card.Address</td>
+                        <td>@Model.Card.NumberOfIndividuals</td>
+                        <td>@Model.Card.Notes</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- تفاصيل الفاتورة -->
+    <h4>تفاصيل الفاتورة</h4>
+    <form id="editInvoiceForm" asp-action="Edit" method="post">
+        <input type="hidden" name="Id" value="@Model.Id" />
+
+        <div class="card small-card">
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>رقم الفاتورة</th>
+                            <th>تاريخ الفاتورة</th>
+                            <th>قيمة الدعم</th>
+                            <th>نقاط الخبز</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>@Model.Id</td>
+                            <td>@Model.InvoiceDate.ToString("yyyy/MM/dd")</td>
+                            <td><input type="number" id="supportAmount" name="SupportAmount" class="form-control" value="@Model.SupportAmount" min="0" required /></td>
+                            <td><input type="number" id="breadAmount" name="BreadAmount" class="form-control" value="@Model.BreadAmount" min="0" required /></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- إضافة عناصر جديدة وعرض القيم -->
+        <h4>إضافة عناصر جديدة</h4>
+        <div class="row">
+            <!-- إضافة العناصر -->
+            <div class="col-md-6">
+
+                <div class="form-group">
+                    <label>قيمة نقدية إضافية</label>
+                    <input type="number" id="debtValue" name="DebtValue" class="form-control" value="@Model.DebtValue" min="0" required />
+                </div>
+
+                <div id="items-container" class="mb-3">
+                    <h5>العناصر في الفاتورة:</h5>
+                    @{
+                        int i = 0;
+                    }
+                    @foreach (var item in Model.InvoiceItems)
+                    {
+
+                        <div class="item-row form-group row">
+                            <div class="col-md-5">
+                                <select name="newItems[@i].ItemId" class="form-control item-select" required>
+                                    <option value="@item.ItemId" data-price="@item.Price" selected>
+                                        @item.Item.Name - @item.Price جنيه
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-5">
+                                <input type="number" name="newItems[@i].Quantity" class="form-control quantity-input" value="@item.Quantity" min="0" required />
+                                <input type="hidden" name="newItems[@i].Item" value="@item.Item.Name" />
+                            </div>
+                            <div class="col-md-2">
+                                <button type="button" class="btn btn-danger btn-sm remove-item">حذف</button>
+                            </div>
+                        </div>
+                        i++;
+                    }
+                </div>
+
+                <button type="button" id="add-item" class="btn btn-secondary mb-3">إضافة عنصر آخر</button>
+                <br />
+                <button type="submit" class="btn btn-primary">حفظ التعديلات</button>
+            </div>
+
+            <!-- عرض القيم -->
+            <div class="col-md-6">
+                <h5>إجمالي الفاتورة:</h5>
+                <div class="form-group">
+                    <label for="totalAmount">الإجمالي</label>
+                    <input type="text" id="totalAmount" class="form-control" readonly />
+                </div>
+                <div class="form-group">
+                    <label for="differenceAmount">الفرق</label>
+                    <input type="text" id="differenceAmount" class="form-control" readonly />
+                </div>
+                <div class="form-group">
+                    <label for="remainingAmount">المبلغ المتبقي</label>
+                    <input type="text" id="remainingAmount" class="form-control" readonly />
+                </div>
+                <div class="form-group">
+                    <label for="paideAmount">المستحق نقداً</label>
+                    <input type="text" id="paideAmount" class="form-control" readonly />
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    function updateAvailableItems() {
+        // جمع العناصر المختارة
+        let selectedItems = new Set();
+        $('#items-container .item-select').each(function () {
+            const selectedValue = $(this).val();
+            if (selectedValue) {
+                selectedItems.add(selectedValue);
+            }
+        });
+
+        // تحديث القوائم المنسدلة
+        $('#items-container .item-select').each(function () {
+            const currentSelect = $(this);
+            const currentValue = currentSelect.val();
+
+            // إعادة كل الخيارات أولاً
+            currentSelect.find('option').each(function () {
+                $(this).prop('disabled', false);
+            });
+
+            // تعطيل الخيارات المختارة في القوائم الأخرى
+            selectedItems.forEach(itemId => {
+                if (itemId !== currentValue) {
+                    currentSelect.find(`option[value="${itemId}"]`).prop('disabled', true);
+                }
+            });
+        });
+    }
+    $(document).ready(function () {
+
+        // استدعاء التحديث عند تحميل الصفحة
+        updateAvailableItems();
+
+        // استدعاء التحديث عند تغيير أي قائمة
+        $(document).on('change', '.item-select', function () {
+            updateAvailableItems();
+        });
+        let itemCount = @Model.InvoiceItems.Count;
+        const existingItems = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(
+            Model.InvoiceItems.ToDictionary(item => item.ItemId, item => item.Price)
+            ));
+
+        function parseFloatSafe(value) {
+            return parseFloat(value) || 0;
+        }
+
+        function updateCalculations() {
+            let total = 0;
+            let debtValue = parseFloatSafe($('#debtValue').val());
+            let supportAmount = parseFloatSafe($('#supportAmount').val());
+            let breadAmount = parseFloatSafe($('#breadAmount').val());
+
+            $('#items-container .item-row').each(function () {
+                let itemId = $(this).find('select').val();
+                let quantity = parseFloatSafe($(this).find('input[type="number"]').val());
+                let itemPrice = existingItems[itemId] || parseFloatSafe($(this).find('option:selected').data('price'));
+                total += quantity * itemPrice;
+            });
+
+            total += debtValue;
+            let difference = supportAmount + breadAmount - total;
+
+            $('#totalAmount').val(total.toFixed(2));
+            $('#differenceAmount').val(Math.max(0, -difference).toFixed(2));
+            $('#remainingAmount').val(Math.max(0, difference).toFixed(2));
+            $('#paideAmount').val((@Model.Card.NumberOfIndividuals + 3 - Math.max(0, difference)).toFixed(2));
+        }
+
+        $('#add-item').click(function () {
+            let newItemRow = `
+                        <div class="item-row form-group row">
+                            <div class="col-md-5">
+                                    <select name="newItems[${itemCount}].ItemId" class="form-control item-select" required >
+                                    <option value="">اختيار عنصر </option>
+    @foreach (var item in ViewData["Items"] as List<Item>)
+    {
+                <option value="@item.Id" data-price="@item.Price" >@item.Name - @item.Price جنيه</option>
+    }
+                                </select>
+                            </div>
+                            <div class="col-md-5">
+                                <input type="number" name="newItems[${itemCount}].Quantity" class="form-control" value="0" min="0" required />
+                            </div>
+                            <div class="col-md-2">
+                                <button type="button" class="btn btn-danger remove-item">حذف</button>
+                            </div>
+                        </div>`;
+            $('#items-container').append(newItemRow);
+            updateAvailableItems();
+            itemCount++;
+        });
+
+        // حذف عنصر
+        $(document).on('click', '.remove-item', function () {
+            $(this).closest('.form-group').remove();
+            updateAvailableItems();
+        });
+
+        $('#items-container').on('input change', 'select, input', updateCalculations);
+        $('#debtValue, #supportAmount, #breadAmount').on('input', updateCalculations);
+    });
+</script>

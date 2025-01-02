@@ -1,0 +1,31 @@
+﻿@model ShopWebMVC.Models.Invoice
+
+@{
+    ViewData["Title"] = "حذف الفاتورة";
+}
+
+<h1>حذف الفاتورة</h1>
+
+<h3>هل أنت متأكد أنك تريد حذف هذه الفاتورة؟</h3>
+<div>
+    <h4>تفاصيل الفاتورة</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">معرف الفاتورة</dt>
+        <dd class="col-sm-10">@Model.Id</dd>
+        <dt class="col-sm-2">تاريخ الفاتورة</dt>
+        <dd class="col-sm-10">@Model.InvoiceDate.ToString("yyyy/MM/dd")</dd>
+        <dt class="col-sm-2">قيمة الدين</dt>
+        <dd class="col-sm-10">@Model.DebtValue</dd>
+        <dt class="col-sm-2">المبلغ الإجمالي</dt>
+        <dd class="col-sm-10">@Model.TotalAmount</dd>
+        <!-- إضافة المزيد من التفاصيل إذا لزم الأمر -->
+    </dl>
+
+    <form asp-action="Delete" method="post">
+        <input type="hidden" name="id" value="@Model.Id" />
+        <input type="submit" value="حذف" class="btn btn-danger" />
+        <a asp-controller="Card" asp-action="ViewInvoices" asp-route-id="@Model.CardId" class="btn btn-secondary">عودة إلى قائمة الفواتير</a>
+
+    </form>
+</div>

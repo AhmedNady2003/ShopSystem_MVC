@@ -1,0 +1,35 @@
+﻿@model IEnumerable<ShopWebMVC.Models.Bakery>
+
+@{
+    ViewData["Title"] = "قائمة المخابز";
+}
+
+<h1>قائمة المخابز</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>الرقم التعريفي</th>
+            <th>اسم المخبز</th>
+           
+            <th>الإجراءات</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var bakery in Model)
+        {
+            <tr>
+                <td>@bakery.Id</td>
+                <td>@bakery.Name</td>
+                
+                <td>
+                    <a asp-action="Details" asp-route-id="@bakery.Id" class="btn btn-info">تفاصيل</a>
+                    <a asp-action="Edit" asp-route-id="@bakery.Id" class="btn btn-primary">تعديل</a>
+                    <a asp-action="Delete" asp-route-id="@bakery.Id" class="btn btn-danger">حذف</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Create" class="btn btn-success">إضافة مخبز جديد</a>

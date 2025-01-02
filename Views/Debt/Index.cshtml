@@ -1,0 +1,45 @@
+﻿@model IEnumerable<ShopWebMVC.Models.Debt>
+
+<h2>قائمة الديون</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>رقم الدين</th>
+            <th>رقم البطاقة</th>
+            <th>اسم البطاقة</th>
+            <th> الدين النقدي</th>
+            <th>العناصر</th>
+            <th>الإجراءات</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var debt in Model)
+        {
+            <tr>
+                <td>@debt.Id</td>
+                <td>@debt.Card?.Id</td>
+                <td>@debt.Card?.FirstName  @debt.Card?.SecondName  @debt.Card?.ThirdName  @debt.Card?.FourthName</td>
+                <td>@debt.MonetaryDebt?</td>
+
+                <td>
+                    @foreach (var item in debt.DebtItems)
+                    {
+                        <span>@item.Item.Name</span>
+
+                        <span>@item.Quantity</span>
+
+                        <br />
+                    }
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@debt.Id" class="btn btn-info">التفاصيل</a>
+                    <a asp-action="Edit" asp-route-id="@debt.Id" class="btn btn-warning">تعديل</a>
+                    <a asp-action="Delete" asp-route-id="@debt.Id" class="btn btn-danger">حذف</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Create" class="btn btn-primary">إضافة دين جديد</a>

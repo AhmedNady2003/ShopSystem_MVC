@@ -1,0 +1,28 @@
+﻿@model ShopWebMVC.Models.Bakery
+
+@{
+    ViewData["Title"] = "حذف المخبز";
+}
+
+<h1>حذف المخبز</h1>
+
+<h3>هل أنت متأكد من أنك تريد حذف هذا المخبز؟</h3>
+
+<div>
+    <h4>@Model.Name</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">الرقم التعريفي</dt>
+        <dd class="col-sm-10">@Model.Id</dd>
+
+        <dt class="col-sm-2">اسم المخبز</dt>
+        <dd class="col-sm-10">@Model.Name</dd>
+
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger"> حذف</button>
+        <a asp-action="Index" class="btn btn-secondary">إلغاء</a>
+    </form>
+</div>

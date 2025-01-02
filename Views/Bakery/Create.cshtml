@@ -1,0 +1,24 @@
+﻿@model ShopWebMVC.Models.Bakery
+
+
+@{
+    ViewData["Title"] = "إضافة مخبز جديد";
+}
+
+<h1>إضافة مخبز جديد</h1>
+
+<form asp-action="Create">
+    <div class="form-group">
+        <label asp-for="Id" class="control-label">رقم المخبز</label>
+        <input asp-for="Id" class="form-control" type="number" value="@ViewBag.NextId" />
+        <span asp-validation-for="Id" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Name" class="control-label">اسم المخبز</label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">إضافة</button>
+    <a asp-action="Index" class="btn btn-secondary">العودة للقائمة</a>
+</form>

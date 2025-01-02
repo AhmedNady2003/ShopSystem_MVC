@@ -1,0 +1,24 @@
+﻿@model ShopWebMVC.Models.Debt
+
+<h2>تفاصيل الدين</h2>
+
+<div>
+    <h4>رقم الدين: @Model.Id</h4>
+    <h5>رقم البطاقة: @Model.Card?.Id</h5>
+    <h5>اسم البطاقة: @Model.Card?.FirstName @Model.Card?.SecondName @Model.Card?.ThirdName @Model.Card?.FourthName  </h5>
+    <h5>الدين النقدي: @Model.MonetaryDebt</h5>
+
+    <h5>العناصر:</h5>
+    <ul>
+        @foreach (var item in Model.DebtItems)
+        {
+           
+            <h6>@item.Item.Name : @item.Quantity</h6>
+            
+        }
+    </ul>
+</div>
+
+<a asp-action="Index" class="btn btn-secondary">رجوع إلى القائمة</a>
+<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">تعديل</a>
+<a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">حذف</a>

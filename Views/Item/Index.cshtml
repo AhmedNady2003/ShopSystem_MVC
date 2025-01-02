@@ -1,0 +1,63 @@
+﻿@model IEnumerable<ShopWebMVC.Models.Item>
+
+@{
+    ViewData["Title"] = "قائمة السلع";
+}
+
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+<div class="container mt-5">
+    <h1 class="mb-4 text-center text-primary">قائمة السلع</h1>
+
+    <div class="table-responsive shadow-lg">
+        <table class="table table-bordered table-hover">
+            <thead class="bg-primary text-white">
+                <tr>
+                    <th class="text-center">رقم الصنف</th>
+                    <th class="text-center">اسم الصنف</th>
+                    <th class="text-center">السعر (جنيه)</th>
+                    <th class="text-center">الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Any())
+                {
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="text-center align-middle">@item.Id</td>
+                            <td class="text-center align-middle">@item.Name</td>
+                            <td class="text-center align-middle">@item.Price.ToString("C", new System.Globalization.CultureInfo("ar-EG"))</td>
+                            <td class="text-center align-middle">
+                                <div class="btn-group" role="group">
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm shadow-sm">
+                                        <i class="fas fa-eye"></i> عرض
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm shadow-sm">
+                                        <i class="fas fa-edit"></i> تعديل
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm shadow-sm">
+                                        <i class="fas fa-trash-alt"></i> حذف
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4" class="text-center text-muted">لا توجد سلع مسجلة حاليًا.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="text-center mt-4">
+        <a asp-action="Create" class="btn btn-success btn-lg shadow-sm">
+            <i class="fas fa-plus-circle"></i> إضافة صنف جديد
+        </a>
+    </div>
+</div>

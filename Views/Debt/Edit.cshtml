@@ -1,0 +1,60 @@
+﻿@model ShopWebMVC.Models.Debt
+<!-- عرض معلومات البطاقة -->
+<div class="card mt-4">
+    <div class="card-header">
+        <h4>معلومات البطاقة</h4>
+    </div>
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-2">رقم البطاقة:</dt>
+            <dd class="col-sm-10">@Model.Card.Id</dd>
+            <dt class="col-sm-2">اسم البطاقة :</dt>
+            <dd class="col-sm-10"> @Model.Card.FirstName  @Model.Card?.SecondName @Model.Card?.ThirdName @Model.Card?.FourthName</dd>
+            <dt class="col-sm-2">عدد الافراد:</dt>
+            <dd class="col-sm-10">@Model.Card.NumberOfIndividuals</dd>
+
+
+        </dl>
+    </div>
+</div>
+<h2>تعديل الدين</h2>
+
+<div class="card">
+    <div class="card-header">
+        <h4>معلومات الدين</h4>
+    </div>
+    <div class="card-body">
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="Id" />
+
+            <div class="form-group">
+                <label for="MonetaryDebt">قيمة الدين النقدية</label>
+                <input type="number" asp-for="MonetaryDebt" class="form-control" />
+            </div>
+
+            <h4>الأصناف المرتبطة بالدين</h4>
+            @if (ViewData["Items"] is IEnumerable<ShopWebMVC.Models.Item> items)
+            {
+                int index = 0;
+                foreach (var item in items)
+                {
+                    <div class="form-group">
+                        <label>@item.Name</label>
+    
+                        <input type="hidden" name="DebtItems[@index].ItemId" value="@item.Id" />
+                        <input type="hidden" name="DebtItems[@index].Item" value="@item" />
+                        <input type="number" name="DebtItems[@index].Quantity" class="form-control"
+                               value="@Model.DebtItems?.FirstOrDefault(d => d.ItemId == item.Id)?.Quantity" min="0" />
+                       
+                    </div>
+                    index++;
+                }
+            }
+
+            <button type="submit" class="btn btn-primary">حفظ التعديلات</button>
+            <a asp-action="Index" class="btn btn-secondary">عودة</a>
+        </form>
+    </div>
+</div>
+
+

@@ -1,0 +1,25 @@
+﻿@model ShopWebMVC.Models.Item
+
+@{
+    ViewData["Title"] = "تفاصيل الصنف";
+}
+
+<h1>تفاصيل الصنف</h1>
+
+<div>
+    <h4>الصنف</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">رقم الصنف</dt>
+        <dd class="col-sm-10">@Model.Id</dd>
+
+        <dt class="col-sm-2">اسم الصنف</dt>
+        <dd class="col-sm-10">@Model.Name</dd>
+
+        <dt class="col-sm-2">السعر</dt>
+        <dd class="col-sm-10">@Model.Price</dd>
+    </dl>
+</div>
+
+<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">تعديل</a>
+<a asp-action="Index" class="btn btn-secondary">العودة للقائمة</a>

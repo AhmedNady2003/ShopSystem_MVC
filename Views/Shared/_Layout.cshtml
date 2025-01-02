@@ -1,0 +1,199 @@
+﻿<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] -ShopWebMVC</title>
+
+    <!-- ربط ملفات CSS المطلوبة -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+    <!-- إضافة مكتبة Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <!-- تصميم القائمة الديناميكية -->
+    <style>
+        body {
+            direction: rtl;
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        /* تنسيق الشريط الجانبي */
+        .sidebar {
+            width: 60px; /* العرض الابتدائي للأيقونة فقط */
+            height: 100vh;
+            background-color: #343a40;
+            color: white;
+            position: fixed;
+            top: 0;
+            right: 0;
+            transition: width 0.3s ease;
+            overflow: hidden;
+            box-shadow: -4px 0 8px rgba(0, 0, 0, 0.2);
+        }
+
+            /* عرض القائمة عندما تكون مفتوحة */
+            .sidebar.open {
+                width: 250px;
+            }
+
+            /* تنسيق عناصر القائمة */
+            .sidebar ul {
+                list-style: none;
+                padding: 0;
+                margin-top: 20px;
+            }
+
+                .sidebar ul li {
+                    padding: 15px 20px;
+                    display: flex;
+                    align-items: center;
+                    transition: background-color 0.3s;
+                    margin-right: 10px; /* المسافة بين الأيقونات والنص */
+                }
+
+                    .sidebar ul li:hover {
+                        background-color: #495057;
+                    }
+
+                    .sidebar ul li a {
+                        color: white;
+                        text-decoration: none;
+                        font-size: 18px;
+                        display: flex;
+                        align-items: center;
+                        width: 100%; /* لجعل الرابط يشغل كامل المسافة */
+                    }
+
+                    .sidebar ul li span {
+                        display: none; /* إخفاء الأسماء افتراضيًا */
+                    }
+
+            .sidebar.open ul li span {
+                display: inline; /* عرض الأسماء عند توسيع القائمة */
+                margin-right: 10px;
+            }
+
+        /* أيقونة القائمة */
+        .sidebar-toggle {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 15px 20px;
+            font-size: 20px;
+            margin-bottom: 15px; /* محاذاة المسافة بين الأيقونة القائمة والعناصر الأخرى */
+        }
+
+        .menu-label {
+            display: none; /* إخفاء كلمة "القائمة" افتراضيًا */
+        }
+
+        .sidebar.open .menu-label {
+            display: inline; /* عرض كلمة "القائمة" عند فتح القائمة */
+            margin-right: 10px;
+        }
+
+        /* المحتوى الرئيسي */
+        .main-content {
+            display:block;
+            margin-right: 60px; /* تباعد حسب عرض الأيقونة */
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: margin-right 0.3s;
+        }
+
+        /* توسيع المحتوى عند فتح القائمة */
+        .sidebar.open ~ .main-content {
+            margin-right: 250px;
+        }
+
+        /* شريط التنقل */
+        .navbar {
+            background-color: #007bff;
+            padding: 10px 20px;
+            border-radius: 0 0 10px 10px;
+            margin-right: 60px; /* إضافة تباعد بين الشريط الجانبي والشريط العلوي */
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 24px;
+            color: white;
+        }
+
+        .navbar-nav .nav-item .nav-link {
+            color: white !important;
+            font-size: 18px;
+        }
+
+            .navbar-nav .nav-item .nav-link:hover {
+                color: #f8f9fa;
+            }
+
+
+    </style>
+
+</head>
+<body>
+
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">بقالة ابو سيف</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">الرئيسية</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">الخصوصية</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-toggle" onclick="toggleSidebar()">
+            <i class="fas fa-bars"></i> <span class="menu-label">القائمة</span>
+        </div>
+        <ul>
+            <li><a asp-controller="Home" asp-action="Index" class="fa fa-home"></i> <span>الرئيسية </span></a></li>
+            <li><a asp-controller="Bakery" asp-action="Index"><i class="fas fa-store"></i> <span>قائمة المخابز</span></a></li>
+            <li><a asp-controller="Card" asp-action="Index"><i class="fas fa-id-card"></i> <span>قائمة البطاقات</span></a></li>
+            <li><a asp-controller="Item" asp-action="Index"><i class="fas fa-boxes"></i> <span>قائمة السلع</span></a></li>
+            <li><a asp-controller="Report" asp-action="Index"><i class="fas fa-chart-line"></i> <span>قائمة التقارير</span></a></li>
+        </ul>
+    </div>
+
+    <div class="main-content" id="mainContent">
+        <h2>@ViewData["Title"]</h2>
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('open');
+        }
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>

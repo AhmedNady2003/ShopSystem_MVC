@@ -1,0 +1,80 @@
+﻿@model List<ShopWebMVC.Models.Card>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+<div id="queueList">
+   
+    @if (Model != null && Model.Any())
+    {
+        <table class="table table-bordered table-hover">
+            <thead class="table-primary">
+                <tr>
+                    <th>رقم البطاقة</th>
+                    <th>الاسم</th>
+                    <th>عدد الأفراد</th>
+                    <th>ملاحظات</th>
+                    <th>المخبز</th>
+                    <th>الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var card in Model)
+                {
+                    <tr id="card-@card.Id">
+                        <td>@card.Id</td>
+                        <td>@card.FirstName @card.SecondName @card.ThirdName @card.FourthName</td>
+                        <td>@card.NumberOfIndividuals</td>
+                        <td>@card.Notes</td>
+                        <td>@card.Bakery?.Name</td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <!-- عرض الفواتير -->
+                                <a asp-controller="Card" asp-action="ViewInvoices" asp-route-id="@card.Id" class="btn btn-success btn-sm" title="عرض الفواتير">
+                                    <i class="fas fa-file-invoice-dollar"></i> صرف
+                                </a>
+
+                                <!-- إزالة من الطابور -->
+                                <button class="btn btn-danger btn-sm remove-from-queue" data-card-id="@card.Id" title="إزالة من الطابور">
+                                    <i class="fas fa-trash-alt"></i> إزالة
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p class="text-center">لا توجد بطاقات في الطابور حاليا.</p>
+    }
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        // التعامل مع حدث الضغط على زر إزالة من الطابور
+        $(document).on('click', '.remove-from-queue', function () {
+            var cardId = $(this).data('card-id');
+            var row = $('#card-' + cardId); // الحصول على السطر الخاص بالبطاقة
+
+            // إرسال طلب لإزالة البطاقة من الطابور
+            $.ajax({
+                url: '/Home/RemoveFromQueue',  // تأكد أن هذا الرابط يطابق الـ Controller و الـ Action الصحيحين
+                type: 'POST',
+                data: { id: cardId },
+                success: function (response) {
+                    if (response.success) {
+                        row.remove(); // إزالة السطر من الجدول
+                    } else {
+                        alert("حدث خطأ أثناء إزالة البطاقة من الطابور.");
+                    }
+                },
+                error: function () {
+                    alert('حدث خطأ أثناء الاتصال بالسيرفر.');
+                }
+            });
+        });
+    });
+</script>

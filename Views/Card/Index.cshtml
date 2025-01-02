@@ -1,0 +1,140 @@
+﻿@model IEnumerable<ShopWebMVC.Models.Card>
+
+@{
+    ViewData["Title"] = "قائمة البطاقات";
+}
+
+<div class="container mt-5">
+    <h1 class="text-center mb-4 text-primary">قائمة البطاقات</h1>
+    <div class="text-center mt-4">
+        <a asp-action="Create" class="btn btn-success btn-lg" style="width: 250px; margin-bottom: 3px; font-size: 1.5rem;">
+            + إضافة بطاقة جديدة
+        </a>
+    </div>
+
+
+    <table class="table table-striped table-bordered shadow-sm">
+        <thead class="thead-dark">
+            <tr>
+                <th>الرقم التعريفي</th>
+                <th>اسم البطاقة</th>
+                <th>رقم الهاتف</th>
+                <th>العنوان</th>
+                <th>عدد الأفراد</th>
+                <th>الملاحظات</th>
+                <th>المخبز</th>
+                <th>الدين</th>
+                <th>الإجراءات</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var card in Model)
+            {
+                <tr>
+                    <td>
+                        @card.Id
+                        <a asp-controller="Card" asp-action="Edit" asp-route-id="@card.Id" title="تعديل البطاقة" class="text-warning">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a asp-controller="Card" asp-action="Delete" asp-route-id="@card.Id" title="حذف البطاقة" onclick="return confirm('هل أنت متأكد أنك تريد حذف هذه البطاقة؟');" class="text-danger">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
+                    </td>
+                    <td>
+                        <a asp-controller="Card" asp-action="Details" asp-route-id="@card.Id" title="عرض تفاصيل البطاقة" class="text-dark">
+                            <i class="fa fa-info-circle"></i>
+                        </a>
+                        @card.FirstName @card.SecondName @card.ThirdName @card.FourthName
+                    </td>
+                    <td>@card.PhoneNumber</td>
+                    <td>@card.Address</td>
+                    <td>@card.NumberOfIndividuals</td>
+                    <td>@card.Notes</td>
+                    <td>@card.Bakery?.Name</td>
+                    <td>
+                        @if (card.Debt != null)
+                        {
+                            <span>@card.Debt.MonetaryDebt.ToString("C", new System.Globalization.CultureInfo("ar-EG"))</span>
+                        }
+                        else
+                        {
+                            <span class="text-muted">لا يوجد</span>
+                        }
+                    </td>
+                    <td>
+                        <div class="btn-group" role="group" aria-label="أزرار الإجراءات">
+                            <a asp-controller="Card" asp-action="ViewInvoices" asp-route-id="@card.Id" class="btn btn-success btn-sm" title="عرض الفواتير">
+                                <i class="fas fa-file-invoice-dollar"></i> صرف
+                            </a>
+                            <form asp-controller="Invoice" asp-action="StrikeCard" asp-route-id="@card.Id" method="post" style="display:inline;">
+                                <input type="number" id="beardAmount" name="beardAmount" value="0" min="0" class="form-control form-control-sm" style="width: 100px; display: inline-block;" />
+                                <button type="submit" class="btn btn-warning btn-sm"
+                                @(card.IsStruck ? "disabled" : "") title="ضرب البطاقة" style="display: inline-block;">
+                                    @(card.IsStruck ? "تم الضرب" : "ضرب")
+                                </button>
+                            </form>
+                            <!-- زر إضافة إلى الطابور -->
+                            <button type="button" class="btn btn-primary btn-sm add-to-queue-btn"
+                            @(card.IsInQueue ? "disabled" : "")
+                                    onclick="addToQueue(@card.Id)">
+                                @(card.IsInQueue ? "في الطابور" : "إضافة إلى الطابور")
+                            </button>
+                           
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function addToQueue(cardId) {
+        $.ajax({
+            url: '/Home/AddToQueue',
+            type: 'POST',
+            data: { id: cardId },
+            success: function (response) {
+                // تغيير نص الزر بعد الإضافة بنجاح
+                let button = $(`button[onclick="addToQueue(${cardId})"]`);
+                button.text('في الطابور').prop('disabled', true);
+            },
+            error: function () {
+                alert("حدث خطأ أثناء إضافة البطاقة إلى الطابور.");
+            }
+        });
+    }
+
+</script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<style>
+    .container {
+        font-family: 'Arial', sans-serif;
+        background-color: #f8f9fa;
+    }
+
+    h1 {
+        font-size: 2.5rem;
+    }
+
+    .table {
+        font-size: 1.1rem;
+    }
+
+    .btn {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.9rem;
+    }
+
+    .thead-dark th {
+        background-color: #343a40;
+        color: white;
+    }
+
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: #f2f2f2;
+    }
+</style>
